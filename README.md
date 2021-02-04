@@ -1,0 +1,2 @@
+# batchRegistryDeleteNetwork
+windows批处理删除网络
