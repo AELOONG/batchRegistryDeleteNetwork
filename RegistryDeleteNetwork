@@ -2,6 +2,7 @@ echo off
 
 setlocal enabledelayedexpansion
 
+@REM 注册表路径
 set networkPath="HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\NetworkList\Profiles"
 
 set min=2
