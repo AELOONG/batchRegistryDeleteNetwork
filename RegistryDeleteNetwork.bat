@@ -11,6 +11,9 @@ set str=
 set str_net=
 set str_net_word=
 
+@REM 判读是否为管理员权限，不是则自动获取权限
+Net session >nul 2>&1 || start "" mshta vbscript:CreateObject("Shell.Application").ShellExecute("cmd.exe","/c %~s0 ::","","runas",1)(window.close)&&exit
+@REM cd /d "%~dp0"
 
 for /f "delims=" %%i in ('reg Query %networkPath%') do (
     @REM echo %%i
