@@ -1,10 +1,11 @@
-echo off
+@echo off
 
 setlocal enabledelayedexpansion
 
 @REM 注册表路径
 set networkPath="HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\NetworkList\Profiles"
 
+set /a delete_count = 0
 set min=2
 set str=
 set str_net=
@@ -29,17 +30,20 @@ for /f "delims=" %%i in ('reg Query %networkPath%') do (
             @REM 带序号网络名，且序号大于等于min
             if !str_net:~-1! geq %min% ( 
                 echo %%i !str_net!
-                @REM reg Delete "%%i" /f
+                reg Delete "%%i" /f
+                set /a delete_count+=1
             )
         )^
         else if %min% equ 0 (
             @REM 不带序号的网络名
             if !str_net:~-2!==网络 ( 
                 echo %%i !str_net:~-2! 
-                @REM reg Delete "%%i" /f
+                reg Delete "%%i" /f
+                set /a delete_count+=1
             )
         )
     )
 )
 
+echo delete count = %delete_count%
 pause
