@@ -68,4 +68,8 @@ if __name__ == '__main__':
     except WindowsError as err:
         print(traceback.format_exc())
 
+    if len(del_key_list) == 0:
+        print("\r\n未找到需要删除的注册表信息")
+    print(f"删除数量 = {del_count}\r\n")
+
     system("pause")
