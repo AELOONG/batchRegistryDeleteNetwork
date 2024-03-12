@@ -47,6 +47,6 @@ for /f "delims=" %%i in ('reg Query %networkPath%') do (
         )
     )
 )
-
+echo.
 echo delete count = %delete_count%
 pause
