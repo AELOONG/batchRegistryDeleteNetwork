@@ -2,7 +2,7 @@
 
 setlocal enabledelayedexpansion
 
-@REM æ³¨å†Œè¡¨è·¯å¾„
+@REM ×¢²á±íÂ·¾¶
 set networkPath="HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\NetworkList\Profiles"
 
 set /a delete_count = 0
@@ -11,40 +11,38 @@ set str=
 set str_net=
 set str_net_word=
 
-@REM åˆ¤è¯»æ˜¯å¦ä¸ºç®¡ç†å‘˜æƒé™ï¼Œä¸æ˜¯åˆ™è‡ªåŠ¨è·å–æƒé™
+@REM ÅĞ¶ÁÊÇ·ñÎª¹ÜÀíÔ±È¨ÏŞ£¬²»ÊÇÔò×Ô¶¯»ñÈ¡È¨ÏŞ
 Net session >nul 2>&1 || start "" mshta vbscript:CreateObject("Shell.Application").ShellExecute("cmd.exe","/c %~s0 ::","","runas",1)(window.close)&&exit
 @REM cd /d "%~dp0"
 
 for /f "delims=" %%i in ('reg Query %networkPath%') do (
     @REM echo %%i
-    for /f "delims=" %%j in ('reg Query "%%i" /v "ProfileName"') do (
-        @REM %%jåŒ…å«<å­é¡¹ç›®ProfileNameçš„å€¼>å’Œ<é¡¹ç›®åœ°å€(å³éƒ¨åˆ†%%j=%%i)>
-        set str=%%j
+    for /f "tokens=3,* delims= " %%j in ('reg Query "%%i" /v "ProfileName"') do (
+        @REM %%j°üº¬<×ÓÏîÄ¿ProfileNameµÄÖµ>ºÍ<ÏîÄ¿µØÖ·>
+        set net_word=%%j
+        set net_num=%%k
 
-        @REM æˆªå–å­—ç¬¦ä¸²å4ä½
-        set str_net=!str:~-4!
-        @REM echo str_net
+        if not defined net_num (
+            @REM ¿ÉÄÜÎª²»´øĞòºÅµÄÍøÂçÃû(ProfileName="ÍøÂç"µÄÇé¿ö), 
+            @REM ½«net_numÉèÎª0,µ±min=0Ê±,É¾³ı"ÍøÂç"
+            set net_num=0
+            set net_name=!net_word!
+            @REM echo !net_word!
+        ) else (
+            set net_name=!net_word! !net_num!
+            @REM echo !net_word! !net_num!
+        )
+        @REM echo !net_name!
 
-        @REM æˆªå–å­—ç¬¦ä¸²å‰2ä½
-        set str_net_word=!str_net:~0,2!
-        @REM echo !str_net_word!
-
-        if !str_net_word!==ç½‘ç»œ (
-            @REM å¸¦åºå·ç½‘ç»œåï¼Œä¸”åºå·å¤§äºç­‰äºmin
-            if !str_net:~-1! geq %min% ( 
-                echo %%i !str_net!
-                reg Delete "%%i" /f
-                set /a delete_count+=1
-            )
-        )^
-        else if %min% equ 0 (
-            @REM ä¸å¸¦åºå·çš„ç½‘ç»œå
-            if !str_net:~-2!==ç½‘ç»œ ( 
-                echo %%i !str_net:~-2! 
+        if !net_word!==ÍøÂç (
+            @REM ĞòºÅ´óÓÚµÈÓÚmin
+            if !net_num! geq %min% ( 
+                echo %%i !net_name!
                 reg Delete "%%i" /f
                 set /a delete_count+=1
             )
         )
+        @REM echo.
     )
 )
 echo.
